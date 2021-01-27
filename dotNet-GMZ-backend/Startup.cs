@@ -7,11 +7,14 @@ using Microsoft.OpenApi.Models;
 using dotNet_GMZ_backend.DAL;
 using dotNet_GMZ_backend.Models.IdentityModels;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 
 namespace dotNet_GMZ_backend
 {
     public class Startup
     {
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -49,6 +52,7 @@ namespace dotNet_GMZ_backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "dotNet_GMZ_backend v1"));
             }
 
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
 
             app.UseRouting();

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using dotNet_GMZ_backend.DAL;
 using dotNet_GMZ_backend.Models.IdentityModels;
 using dotNet_GMZ_backend.Models.ModelsDTO;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace dotNet_GMZ_backend.Controllers
 {
@@ -16,12 +15,15 @@ namespace dotNet_GMZ_backend.Controllers
         private readonly UserManager<UserApp> _userManager;
         private readonly RoleManager<RoleApp> _roleManager;
         private readonly SignInManager<UserApp> _signInManager;
+        private readonly ILogger<AuthorizationController> _logger;
 
-        public AuthorizationController(UserManager<UserApp> userManager,SignInManager<UserApp> signInManager, RoleManager<RoleApp> roleManager)
+        public AuthorizationController(UserManager<UserApp> userManager,SignInManager<UserApp> signInManager, 
+            RoleManager<RoleApp> roleManager, ILogger<AuthorizationController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         [Route("register")]
@@ -31,6 +33,7 @@ namespace dotNet_GMZ_backend.Controllers
         {
             try
             {
+                _logger.LogInformation(nameof(Register));
                 if (TryValidateModel(model))
                 {
                     var newUser = new UserApp() { Email = model.Email, UserName = model.UserName };
@@ -60,7 +63,7 @@ namespace dotNet_GMZ_backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e,nameof(Register));
                 return BadRequest("Error!");
             }
         }
