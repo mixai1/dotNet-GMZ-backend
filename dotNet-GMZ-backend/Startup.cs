@@ -1,16 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using dotNet_GMZ_backend.DAL;
 using dotNet_GMZ_backend.Models.IdentityModels;
 using Microsoft.EntityFrameworkCore;
@@ -31,12 +24,19 @@ namespace dotNet_GMZ_backend
         {
 
             services.AddControllers();
+            services.AddCors();
             services.AddDbContext<AppDbContext>(op => { op.UseSqlServer(Configuration.GetConnectionString("Default")); });
-            services.AddIdentity<UserApp, RoleApp>().AddEntityFrameworkStores<AppDbContext>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotNet_GMZ_backend", Version = "v1" });
             });
+            services.AddIdentity<UserApp, RoleApp>(opts =>
+                {
+                    opts.Password.RequireNonAlphanumeric = false;
+                    opts.Password.RequiredLength = 5;
+                    opts.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +53,7 @@ namespace dotNet_GMZ_backend
 
             app.UseRouting();
 
+            app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseAuthentication();
             app.UseAuthorization();
 

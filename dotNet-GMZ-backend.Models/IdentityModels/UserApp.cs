@@ -4,6 +4,5 @@ namespace dotNet_GMZ_backend.Models.IdentityModels
 {
     public class UserApp : IdentityUser
     {
-        
     }
 }
