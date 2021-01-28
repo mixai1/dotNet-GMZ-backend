@@ -1,17 +1,18 @@
-using System;
-using dotNet_GMZ_backend.DAL;
+using dotNet_GMZ_backend.Models.AppSettingsModels;
 using dotNet_GMZ_backend.Models.IdentityModels;
+using dotNet_GMZ_backend.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Serilog;
 using System.Text;
+using Serilog;
+using System;
 
 namespace dotNet_GMZ_backend
 {
@@ -27,6 +28,7 @@ namespace dotNet_GMZ_backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
             services.AddControllers();
             services.AddCors();
             services.AddDbContext<AppDbContext>(op =>
@@ -40,7 +42,7 @@ namespace dotNet_GMZ_backend
             services.AddIdentity<UserApp, RoleApp>(opts =>
                 {
                     opts.Password.RequireNonAlphanumeric = false;
-                    opts.Password.RequiredLength = 5;
+                    opts.Password.RequiredLength = 6;
                     opts.Password.RequireUppercase = false;
                 })
                 .AddEntityFrameworkStores<AppDbContext>();

@@ -1,14 +1,17 @@
-﻿using dotNet_GMZ_backend.Models.IdentityModels;
+﻿using dotNet_GMZ_backend.Models.AppSettingsModels;
+using dotNet_GMZ_backend.Models.IdentityModels;
 using dotNet_GMZ_backend.Models.ModelsDTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 
 namespace dotNet_GMZ_backend.Controllers
 {
@@ -20,14 +23,16 @@ namespace dotNet_GMZ_backend.Controllers
         private readonly RoleManager<RoleApp> _roleManager;
         private readonly SignInManager<UserApp> _signInManager;
         private readonly ILogger<AuthorizationController> _logger;
+        private readonly AppSettings _optionsApp;
 
         public AuthorizationController(UserManager<UserApp> userManager, SignInManager<UserApp> signInManager,
-            RoleManager<RoleApp> roleManager, ILogger<AuthorizationController> logger)
+            RoleManager<RoleApp> roleManager, ILogger<AuthorizationController> logger, IOptions<AppSettings> optionsApp)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _optionsApp = optionsApp.Value;
         }
 
         [Route("register")]
@@ -88,7 +93,7 @@ namespace dotNet_GMZ_backend.Controllers
                     if (findUser != null &&
                         await _userManager.CheckPasswordAsync(findUser, userLoginDto.Password))
                     {
-                        var token = CreateToken(findUser);
+                        var token = CreateToken(findUser).Result;
                         return Ok(token);
                     }
                     _logger.LogError(nameof(Login));
@@ -104,18 +109,21 @@ namespace dotNet_GMZ_backend.Controllers
             }
         }
 
-        private string CreateToken(UserApp userApp)
+        private async Task<string> CreateToken(UserApp userApp)
         {
+            var role = await _userManager.GetRolesAsync(userApp);
+            var opIdentity = new IdentityOptions();
             var tokenDescription = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("UserId", userApp.Id.ToString() ),
+                    new Claim(opIdentity.ClaimsIdentity.RoleClaimType,role.FirstOrDefault()),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes("ReallySecretKey")),
+                        Encoding.UTF8.GetBytes(_optionsApp.JWT_Secret)),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
