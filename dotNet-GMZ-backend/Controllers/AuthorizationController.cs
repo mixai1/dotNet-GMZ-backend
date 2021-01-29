@@ -70,6 +70,7 @@ namespace dotNet_GMZ_backend.Controllers
                         return Ok(result);
                     }
                 }
+                _logger.LogError("Error");
                 return BadRequest("Error!");
             }
             catch (Exception e)

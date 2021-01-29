@@ -5,4 +5,8 @@
     <RootNamespace>dotNet_GMZ_backend.Core</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\dotNet-GMZ-backend.Models\dotNet-GMZ-backend.Models.csproj" />
+  </ItemGroup>
+
 </Project>
