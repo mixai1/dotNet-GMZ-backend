@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -20,8 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNet-GMZ-backend.CQRS\dotNet-GMZ-backend.CQRS.csproj" />
     <ProjectReference Include="..\dotNet-GMZ-backend.DAL\dotNet-GMZ-backend.DAL.csproj" />
     <ProjectReference Include="..\dotNet-GMZ-backend.Models\dotNet-GMZ-backend.Models.csproj" />
+    <ProjectReference Include="..\dotNet-GMZ-backend.Services\dotNet-GMZ-backend.Services.csproj" />
   </ItemGroup>
 
 </Project>
