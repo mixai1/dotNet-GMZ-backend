@@ -1,5 +1,8 @@
 using dotNet_GMZ_backend.Models.AppSettingsModels;
+using dotNet_GMZ_backend.Services.MapperService;
 using dotNet_GMZ_backend.Models.IdentityModels;
+using dotNet_GMZ_backend.DAL.Repository;
+using dotNet_GMZ_backend.Core;
 using dotNet_GMZ_backend.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,9 +13,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
+using AutoMapper;
 using Serilog;
 using System;
+using MediatR;
+
 
 namespace dotNet_GMZ_backend
 {
@@ -31,6 +38,10 @@ namespace dotNet_GMZ_backend
             services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
             services.AddControllers();
             services.AddCors();
+            var assembly = AppDomain.CurrentDomain.Load("dotNet-GMZ-backend.CQRS");
+            services.AddMediatR(assembly);
+            services.AddTransient<INewsRecordRepository, NewsRecordRepository>();
+            services.AddAutoMapper(typeof(AutoMapperApp).Assembly);
             services.AddDbContext<AppDbContext>(op =>
             {
                 op.UseSqlServer(Configuration.GetConnectionString("Default"));

@@ -1,29 +1,30 @@
-﻿using dotNet_GMZ_backend.Models.Models;
-using dotNet_GMZ_backend.Core;
+﻿using dotNet_GMZ_backend.Core;
+using dotNet_GMZ_backend.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace dotNet_GMZ_backend.DAL.Repository
 {
     public class Repository<T> : IRepository<T> where T : Entity
     {
-        private AppDbContext _appDbContext;
-        private ILogger _logger;
+        private readonly AppDbContext _appDbContext;
+        private readonly ILogger<Repository<T>> _logger;
 
-        public Repository(AppDbContext appDbContext, ILogger logger)
+        public Repository(AppDbContext appDbContext, ILogger<Repository<T>> logger)
         {
             _appDbContext = appDbContext;
             _logger = logger;
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(CancellationToken cancellationToken)
         {
-            await _appDbContext.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<T>> GetAllAsync()
@@ -72,8 +73,8 @@ namespace dotNet_GMZ_backend.DAL.Repository
         {
             try
             {
-               var result = await _appDbContext.Set<T>().FindAsync(id);
-               return result;
+                var result = await _appDbContext.Set<T>().FindAsync(id);
+                return result;
             }
             catch (Exception e)
             {
@@ -86,18 +87,18 @@ namespace dotNet_GMZ_backend.DAL.Repository
         {
             try
             {
-               var result = await _appDbContext.Set<T>().FindAsync(id);
-               if (result is null)
-               {
-                   return false;
-               }
+                var result = await _appDbContext.Set<T>().FindAsync(id);
+                if (result is null)
+                {
+                    return false;
+                }
 
-               _appDbContext.Set<T>().Remove(result);
-               return true;
+                _appDbContext.Set<T>().Remove(result);
+                return true;
             }
             catch (Exception e)
             {
-                _logger.LogError(nameof(RemoveById),e);
+                _logger.LogError(nameof(RemoveById), e);
                 return false;
             }
         }

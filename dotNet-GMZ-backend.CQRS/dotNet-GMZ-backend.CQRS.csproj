@@ -6,11 +6,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Querys\" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <ProjectReference Include="..\dotNet-GMZ-backend.Core\dotNet-GMZ-backend.Core.csproj" />
+    <ProjectReference Include="..\dotNet-GMZ-backend.Models\dotNet-GMZ-backend.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Querys\NewsRecordQuerys\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Serilog">
+      <HintPath>..\..\..\Users\fhcty\.nuget\packages\serilog\2.9.0\lib\netstandard2.0\Serilog.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

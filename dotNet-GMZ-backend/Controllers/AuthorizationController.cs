@@ -1,17 +1,17 @@
 ﻿using dotNet_GMZ_backend.Models.AppSettingsModels;
 using dotNet_GMZ_backend.Models.IdentityModels;
 using dotNet_GMZ_backend.Models.ModelsDTO;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Text;
+using System;
 
 namespace dotNet_GMZ_backend.Controllers
 {
@@ -42,7 +42,7 @@ namespace dotNet_GMZ_backend.Controllers
         {
             try
             {
-                _logger.LogInformation(nameof(Register));
+                _logger.LogInformation(nameof(AuthorizationController.Register));
                 if (TryValidateModel(userRegisterDto))
                 {
                     var newUser = new UserApp()
@@ -70,13 +70,13 @@ namespace dotNet_GMZ_backend.Controllers
                         return Ok(result);
                     }
                 }
-                _logger.LogError("Error");
+                _logger.LogError(nameof(AuthorizationController.Register));
                 return BadRequest("Error!");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, nameof(Register));
-                return BadRequest("Error!");
+                _logger.LogError(nameof(AuthorizationController.Register), e);
+                return BadRequest(e.Message);
             }
         }
 
@@ -97,16 +97,16 @@ namespace dotNet_GMZ_backend.Controllers
                         var token = CreateToken(findUser).Result;
                         return Ok(token);
                     }
-                    _logger.LogError(nameof(Login));
+                    _logger.LogError(nameof(AuthorizationController.Login));
                     return BadRequest("Error");
                 }
-                _logger.LogError(nameof(Login));
+                _logger.LogError(nameof(AuthorizationController.Login));
                 return BadRequest("Error");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, nameof(Login));
-                return BadRequest("Error");
+                _logger.LogError(nameof(AuthorizationController.Login), e);
+                return BadRequest(e.Message);
             }
         }
 

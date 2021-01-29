@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNet-GMZ-backend.BL", "do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNet-GMZ-backend.CQRS", "dotNet-GMZ-backend.CQRS\dotNet-GMZ-backend.CQRS.csproj", "{C798E534-27FE-4CEC-A671-B7F0D66209E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNet-GMZ-backend.Services", "dotNet-GMZ-backend.Services\dotNet-GMZ-backend.Services.csproj", "{6938AEED-960E-4DF7-9037-B228F0DEFC29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{C798E534-27FE-4CEC-A671-B7F0D66209E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C798E534-27FE-4CEC-A671-B7F0D66209E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C798E534-27FE-4CEC-A671-B7F0D66209E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6938AEED-960E-4DF7-9037-B228F0DEFC29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6938AEED-960E-4DF7-9037-B228F0DEFC29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6938AEED-960E-4DF7-9037-B228F0DEFC29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6938AEED-960E-4DF7-9037-B228F0DEFC29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
