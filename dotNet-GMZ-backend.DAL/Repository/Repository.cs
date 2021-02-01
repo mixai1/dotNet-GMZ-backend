@@ -27,7 +27,7 @@ namespace dotNet_GMZ_backend.DAL.Repository
             await _appDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             try
             {
@@ -55,7 +55,7 @@ namespace dotNet_GMZ_backend.DAL.Repository
             }
         }
 
-        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
             try
             {

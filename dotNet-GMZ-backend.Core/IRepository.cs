@@ -10,9 +10,9 @@ namespace dotNet_GMZ_backend.Core
     public interface IRepository<T> where T : Entity
     {
         Task SaveAsync(CancellationToken token);
-        Task<List<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
         Task<bool> CreateAsync(T obj);
-        Task<List<T>> FindAsync(Expression<Func<T,bool>> predicate);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T,bool>> predicate);
         Task<T> FindById(Guid id);
         Task<bool> RemoveById(Guid id);
     }
