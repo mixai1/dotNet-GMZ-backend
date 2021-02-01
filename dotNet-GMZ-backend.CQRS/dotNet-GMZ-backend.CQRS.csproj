@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Querys\NewsRecordQuerys\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Serilog">
       <HintPath>..\..\..\Users\fhcty\.nuget\packages\serilog\2.9.0\lib\netstandard2.0\Serilog.dll</HintPath>
     </Reference>

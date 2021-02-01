@@ -1,5 +1,6 @@
 ﻿using dotNet_GMZ_backend.CQRS.Commands.NewsRecordCommands.Create;
 using dotNet_GMZ_backend.CQRS.Commands.NewsRecordCommands.Remove;
+using dotNet_GMZ_backend.CQRS.Querys.NewsRecordQuerys.Find;
 using dotNet_GMZ_backend.Models.ModelsDTO;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,23 @@ namespace dotNet_GMZ_backend.Controllers
         {
             _mediator = mediator;
             _logger = logger;
+        }
+
+        [Route("find")]
+        [HttpGet]
+        //Get : /api/RecordNews/find
+        public async Task<IActionResult> FindNewsRecord(Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new FindNewsRecord(id));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(nameof(RecordNewsController.FindNewsRecord), e);
+                return BadRequest();
+            }
         }
 
         [Route("create")]
