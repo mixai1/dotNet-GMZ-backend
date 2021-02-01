@@ -8,8 +8,8 @@ namespace dotNet_GMZ_backend.Services.MapperService
     {
         public AutoMapperApp()
         {
-            CreateMap<NewsRecordDTO, NewsRecord>();
-            CreateMap<NewsRecord, NewsRecordDTO>();
+            CreateMap<CreateNewsRecordDTO, NewsRecord>();
+            CreateMap<NewsRecord, CreateNewsRecordDTO>();
         }
     }
 }

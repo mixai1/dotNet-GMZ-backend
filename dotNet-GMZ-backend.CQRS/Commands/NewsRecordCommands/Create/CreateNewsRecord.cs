@@ -5,9 +5,9 @@ namespace dotNet_GMZ_backend.CQRS.Commands.NewsRecordCommands.Create
 {
     public class CreateNewsRecord : IRequest<bool>
     {
-        public NewsRecordDTO NewsRecordDto { get; }
+        public CreateNewsRecordDTO NewsRecordDto { get; }
 
-        public CreateNewsRecord(NewsRecordDTO newsRecordDto)
+        public CreateNewsRecord(CreateNewsRecordDTO newsRecordDto)
         {
             NewsRecordDto = newsRecordDto;
         }

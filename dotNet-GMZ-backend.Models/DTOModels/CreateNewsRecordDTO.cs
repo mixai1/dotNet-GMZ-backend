@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace dotNet_GMZ_backend.Models.ModelsDTO
 {
-    public class NewsRecordDTO
+    public class CreateNewsRecordDTO
     {
         [Required]
         public string Header { get; set; }

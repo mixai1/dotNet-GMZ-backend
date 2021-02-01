@@ -1,6 +1,6 @@
-﻿using System;
+﻿using dotNet_GMZ_backend.Models.IdentityModels;
 using System.ComponentModel.DataAnnotations;
-using dotNet_GMZ_backend.Models.IdentityModels;
+using System;
 
 namespace dotNet_GMZ_backend.Models.Models
 {
