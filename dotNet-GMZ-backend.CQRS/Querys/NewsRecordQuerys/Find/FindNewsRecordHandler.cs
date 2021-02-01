@@ -22,7 +22,6 @@ namespace dotNet_GMZ_backend.CQRS.Querys.NewsRecordQuerys.Find
             _mapper = mapper;
         }
 
-
         public async Task<FoundNewsRecordDTO> Handle(FindNewsRecord request, CancellationToken cancellationToken)
         {
             try

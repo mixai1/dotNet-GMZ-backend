@@ -31,7 +31,7 @@ namespace dotNet_GMZ_backend.DAL.Repository
         {
             try
             {
-                var result = await _appDbContext.Set<T>().ToListAsync();
+                var result = await _appDbContext.Set<T>().Take(10).ToListAsync();
                 return result;
             }
             catch (Exception e)
