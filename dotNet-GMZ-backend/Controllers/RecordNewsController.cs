@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using dotNet_GMZ_backend.CQRS.Querys.NewsRecordQuerys.GetAll;
 
 namespace dotNet_GMZ_backend.Controllers
 {
@@ -23,6 +24,24 @@ namespace dotNet_GMZ_backend.Controllers
             _logger = logger;
         }
 
+        [Route("getAll")]
+        [HttpGet]
+        //GET api/RecordNews/getAll
+        public async Task<IActionResult> GetAllNewsRecord()
+        {
+            try
+            {
+                _logger.LogInformation(nameof(RecordNewsController.GetAllNewsRecord));
+                var result = await _mediator.Send(new GetAllNewsRecord());
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(nameof(RecordNewsController), e);
+                return BadRequest("Error");
+            }
+        }
+
         [Route("find")]
         [HttpGet]
         //Get : /api/RecordNews/find
@@ -30,6 +49,7 @@ namespace dotNet_GMZ_backend.Controllers
         {
             try
             {
+                _logger.LogInformation(nameof(RecordNewsController.FindNewsRecord));
                 var result = await _mediator.Send(new FindNewsRecord(id));
                 return Ok(result);
             }
@@ -63,13 +83,13 @@ namespace dotNet_GMZ_backend.Controllers
             catch (Exception e)
             {
                 _logger.LogError(nameof(RecordNewsController.CreateNewsRecord), e);
-                return BadRequest(e.Message);
+                return BadRequest("Error");
             }
         }
 
         [Route("remove")]
         [HttpPost]
-        // POST : /api/RecordNews/remove
+        //POST : /api/RecordNews/remove
         public async Task<IActionResult> RemoveNewsRecord(RemoveNewsRecordDTO removeNewsRecordDto)
         {
             try

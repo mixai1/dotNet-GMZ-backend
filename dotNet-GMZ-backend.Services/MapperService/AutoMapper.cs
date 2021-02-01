@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using dotNet_GMZ_backend.Models.DTOModels;
 using dotNet_GMZ_backend.Models.Models;
 using dotNet_GMZ_backend.Models.ModelsDTO;
@@ -12,6 +13,7 @@ namespace dotNet_GMZ_backend.Services.MapperService
             CreateMap<CreateNewsRecordDTO, NewsRecord>();
             CreateMap<NewsRecord, CreateNewsRecordDTO>();
             CreateMap<NewsRecord, FoundNewsRecordDTO>();
+            CreateMap<IEnumerable<NewsRecord>, IEnumerable<FindNewsRecordDTO>>();
         }
     }
 }
