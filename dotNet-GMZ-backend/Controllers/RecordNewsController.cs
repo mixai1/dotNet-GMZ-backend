@@ -26,7 +26,7 @@ namespace dotNet_GMZ_backend.Controllers
 
         [Route("getAll")]
         [HttpGet]
-        //GET api/RecordNews/getAll
+        //GET : api/RecordNews/getAll
         public async Task<IActionResult> GetAllNewsRecord()
         {
             try
