@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 using System;
+using AutoMapper;
+using dotNet_GMZ_backend.Models.DTOModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotNet_GMZ_backend.Controllers
 {
@@ -24,14 +27,17 @@ namespace dotNet_GMZ_backend.Controllers
         private readonly SignInManager<UserApp> _signInManager;
         private readonly ILogger<AuthorizationController> _logger;
         private readonly AppSettings _optionsApp;
+        private readonly IMapper _mapper;
 
         public AuthorizationController(UserManager<UserApp> userManager, SignInManager<UserApp> signInManager,
-            RoleManager<RoleApp> roleManager, ILogger<AuthorizationController> logger, IOptions<AppSettings> optionsApp)
+            RoleManager<RoleApp> roleManager, ILogger<AuthorizationController> logger,
+            IOptions<AppSettings> optionsApp, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _mapper = mapper;
             _optionsApp = optionsApp.Value;
         }
 
@@ -45,22 +51,30 @@ namespace dotNet_GMZ_backend.Controllers
                 _logger.LogInformation(nameof(AuthorizationController.Register));
                 if (TryValidateModel(userRegisterDto))
                 {
-                    var newUser = new UserApp()
-                    {
-                        Email = userRegisterDto.Email,
-                        UserName = userRegisterDto.UserName
-                    };
+                    var newUser = _mapper.Map<UserApp>(userRegisterDto);
 
                     var result = await _userManager.CreateAsync(newUser, userRegisterDto.Password);
 
+                    if (!result.Succeeded)
+                    {
+                        return BadRequest(result.Errors);
+                    }
+
                     if (userRegisterDto.UserName == "Super_Admin")
                     {
-                        await _roleManager.CreateAsync(new RoleApp() { Name = "Admin" });
+                        if (!await _roleManager.RoleExistsAsync("Admin"))
+                        {
+                            await _roleManager.CreateAsync(new RoleApp() { Name = "Admin" });
+                        }
                         await _userManager.AddToRoleAsync(newUser, "Admin");
                     }
                     else
                     {
-                        await _roleManager.CreateAsync(new RoleApp() { Name = "User" });
+                        if (!await _roleManager.RoleExistsAsync("User"))
+                        {
+                            await _roleManager.CreateAsync(new RoleApp() { Name = "User" });
+                        }
+
                         await _userManager.AddToRoleAsync(newUser, "User");
                     }
 
@@ -95,7 +109,7 @@ namespace dotNet_GMZ_backend.Controllers
                         await _userManager.CheckPasswordAsync(findUser, userLoginDto.Password))
                     {
                         var token = CreateToken(findUser).Result;
-                        return Ok(token);
+                        return Ok(new {token});
                     }
                     _logger.LogError(nameof(AuthorizationController.Login));
                     return BadRequest("Error");
@@ -113,13 +127,12 @@ namespace dotNet_GMZ_backend.Controllers
         private async Task<string> CreateToken(UserApp userApp)
         {
             var role = await _userManager.GetRolesAsync(userApp);
-            var opIdentity = new IdentityOptions();
             var tokenDescription = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("UserId", userApp.Id.ToString() ),
-                    new Claim(opIdentity.ClaimsIdentity.RoleClaimType,role.FirstOrDefault()),
+                    new Claim(new IdentityOptions().ClaimsIdentity.RoleClaimType,role.FirstOrDefault()),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(
