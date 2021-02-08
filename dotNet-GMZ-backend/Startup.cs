@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using System.Text;
 using AutoMapper;
 using Serilog;
@@ -36,8 +35,8 @@ namespace dotNet_GMZ_backend
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
-            services.AddControllers();
             services.AddCors();
+            services.AddControllers();
             var assembly = AppDomain.CurrentDomain.Load("dotNet-GMZ-backend.CQRS");
             services.AddMediatR(assembly);
             services.AddTransient<INewsRecordRepository, NewsRecordRepository>();
@@ -58,25 +57,27 @@ namespace dotNet_GMZ_backend
                 })
                 .AddEntityFrameworkStores<AppDbContext>();
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = false;
-                x.TokenValidationParameters = new TokenValidationParameters()
+            var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString());
+            Console.WriteLine(key);
+            services.AddAuthentication(opt =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString()))
-                };
-            });
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(j =>
+                {
+                    j.RequireHttpsMetadata = false;
+                    j.SaveToken = false;
+                    j.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,17 +100,18 @@ namespace dotNet_GMZ_backend
                     "/swagger/v1/swagger.json", "dotNet_GMZ_backend v1"));
             }
 
-            app.UseSerilogRequestLogging();
-            app.UseRouting();
-
             app.UseCors(builder =>
             {
-                builder.WithOrigins(Configuration["ApplicationSettings:Client_URL"].ToString())
+                builder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
             app.UseHttpsRedirection();
+
+            app.UseSerilogRequestLogging();
+            app.UseRouting();
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
