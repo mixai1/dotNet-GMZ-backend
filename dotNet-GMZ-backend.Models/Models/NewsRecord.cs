@@ -9,8 +9,9 @@ namespace dotNet_GMZ_backend.Models.Models
         [Required]
         public string Header { get; set; }
         [Required]
+        public string SubTitles { get; set; }
+        [Required]
         public string Body { get; set; }
         public DateTime DateTime { get; set; }
-        public UserApp UserApp { get; set; }
     }
 }

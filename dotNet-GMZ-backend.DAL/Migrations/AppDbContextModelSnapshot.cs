@@ -222,12 +222,18 @@ namespace dotNet_GMZ_backend.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Body")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Header")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubTitles")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserAppId")
@@ -293,11 +299,9 @@ namespace dotNet_GMZ_backend.DAL.Migrations
 
             modelBuilder.Entity("dotNet_GMZ_backend.Models.Models.NewsRecord", b =>
                 {
-                    b.HasOne("dotNet_GMZ_backend.Models.IdentityModels.UserApp", "UserApp")
+                    b.HasOne("dotNet_GMZ_backend.Models.IdentityModels.UserApp", null)
                         .WithMany("NewsRecords")
                         .HasForeignKey("UserAppId");
-
-                    b.Navigation("UserApp");
                 });
 
             modelBuilder.Entity("dotNet_GMZ_backend.Models.IdentityModels.UserApp", b =>

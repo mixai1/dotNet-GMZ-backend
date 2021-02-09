@@ -7,10 +7,12 @@ namespace dotNet_GMZ_backend.Models.ModelsDTO
     {
         [Required]
         public string Header { get; set; }
+        [Required]
+        public string SubTitles { get; set; }
 
         [Required]
         public string Body { get; set; }
 
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime DateTime { get; set; } = DateTime.UtcNow;
     }
 }
